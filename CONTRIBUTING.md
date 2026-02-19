@@ -10,6 +10,8 @@ The root `install.sh` auto-discovers items by scanning `mcp/` and `skills/` for 
 
 This means: **if your item has a `run.sh` and a `## Purpose` in its README, it will appear automatically in the installer.**
 
+For Windows users, each item should also include a `run.ps1` (PowerShell script) that performs the same installation.
+
 ---
 
 ## Adding a new item
@@ -19,13 +21,16 @@ This means: **if your item has a `run.sh` and a `## Purpose` in its README, it w
 ```
 mcp/my-tool/
   README.md
-  run.sh
+  run.sh       ← macOS/Linux installer
+  run.ps1      ← Windows installer
   ...any supporting files
 ```
 
 2. Write the `README.md` using the standard sections (see below).
-3. Write the `run.sh` following the conventions below.
-4. Test it locally: `bash install.sh --mcp my-tool`
+3. Write `run.sh` (bash) and `run.ps1` (PowerShell) following the conventions below.
+4. Test it locally:
+   - macOS: `bash install.sh --mcp my-tool`
+   - Windows: `.\mcp\my-tool\run.ps1`
 
 ---
 
@@ -164,11 +169,58 @@ curl -fsSL https://raw.githubusercontent.com/fcm-digital/claude-for-product/main
 
 ---
 
+## run.ps1 conventions (Windows)
+
+For Windows support, include a `run.ps1` alongside `run.sh`. The PowerShell script should mirror the bash script's functionality.
+
+**Structure:**
+
+```powershell
+$ErrorActionPreference = "Stop"
+
+$ITEM_DIR = $PSScriptRoot
+$INSTALL_DIR = "$env:USERPROFILE\.mcp\my-tool"
+
+Write-Host "  Installing my-tool..."
+
+# 1. Check dependencies
+# 2. Prompt for tokens
+# 3. Copy and build
+# 4. Write to Claude/Windsurf config
+```
+
+**Critical: Use Windows-native paths**
+
+The most common Windows issue is path format. When writing to config JSON, use forward slashes or escaped backslashes:
+
+```powershell
+# Convert backslashes to forward slashes for JSON compatibility
+$indexPath = "$INSTALL_DIR\build\index.js" -replace '\\', '/'
+# Result: C:/Users/username/.mcp/my-tool/build/index.js
+
+$mcpEntry = @{
+    command = "node"
+    args = @($indexPath)  # Use the converted path
+    env = @{ MY_TOKEN = $token }
+}
+```
+
+**Never use Unix-style paths** like `/c/Users/...` — Node.js on Windows will misinterpret them as `C:\c\Users\...`.
+
+**Config file locations on Windows:**
+- Claude Desktop: `$env:APPDATA\Claude\claude_desktop_config.json`
+- Windsurf: `$env:APPDATA\Windsurf\mcp_config.json`
+
+See `mcp/fcm-rag/run.ps1` for a complete example.
+
+---
+
 ## Checklist before merging
 
 - [ ] Folder uses `kebab-case`
 - [ ] `README.md` has all standard sections; `## Purpose` is one line
 - [ ] `run.sh` is executable (`chmod +x run.sh`) and starts with `#!/bin/bash`
+- [ ] `run.ps1` exists for Windows support and uses native Windows paths
 - [ ] No tokens or secrets anywhere in the files
 - [ ] Tested locally with `bash install.sh --mcp <name>` or `bash install.sh --skill <name>`
 - [ ] Status in README set to `Ready`

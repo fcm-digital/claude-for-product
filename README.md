@@ -33,11 +33,46 @@ If an item requires a token or URL, the installer will ask for it — nothing is
 
 ## Requirements
 
+### macOS
 - **Claude Desktop** or **Claude Code** installed
 - **Node.js** LTS — [nodejs.org](https://nodejs.org)
-- **Git**
-  - Mac: pre-installed; if missing run `xcode-select --install`
-  - Windows: install [Git for Windows](https://gitforwindows.org) and run the command above in **Git Bash**
+- **Git** — pre-installed on most Macs; if missing: `xcode-select --install`
+
+### Windows
+- **Claude Desktop** or **Windsurf** installed
+- **Node.js** LTS — [nodejs.org](https://nodejs.org)
+- **Git** — [git-scm.com](https://git-scm.com/download/win)
+- **PowerShell** 5.1+ (pre-installed on Windows 10/11)
+
+---
+
+## Install on Windows
+
+Open **PowerShell** and run:
+
+```powershell
+git clone https://github.com/fcm-digital/claude-for-product.git
+cd claude-for-product
+.\install.ps1
+```
+
+You'll see the same interactive menu. Type the numbers you want, press Enter, and restart Claude Desktop / Windsurf when done.
+
+**Alternative commands:**
+
+```powershell
+# List available items
+.\install.ps1 -List
+
+# Install a specific MCP
+.\install.ps1 -Mcp fcm-rag
+
+# Install a specific skill
+.\install.ps1 -Skill my-skill
+
+# Install everything
+.\install.ps1 -All
+```
 
 ---
 
