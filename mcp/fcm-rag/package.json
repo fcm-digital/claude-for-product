@@ -1,0 +1,20 @@
+{
+  "name": "mcp-fcm-rag",
+  "version": "1.0.0",
+  "description": "MCP server that connects to the FCM RAG API",
+  "type": "module",
+  "bin": {
+    "mcp-fcm-rag": "./build/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node build/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "@types/node": "^22.15.21"
+  }
+}

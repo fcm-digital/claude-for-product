@@ -1,34 +1,63 @@
-# MCP and Skills Library for Product Teams
+# Claude for Product
 
-This repository is a shared catalog where product teammates can publish and reuse MCPs and skills. Each item lives in its own folder with a short README, a `run.sh`, and any supporting files required to work.
+Shared catalog of MCPs and skills for FCM product teams.
 
-## Structure
+---
 
-```
-mcp/
-  <name>/
-    README.md
-    run.sh
-    ...supporting files
-skills/
-  <name>/
-    README.md
-    run.sh
-    ...supporting files
+## Install (one command)
+
+Open **Terminal** and run:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/fcm-digital/claude-for-product/main/install.sh | bash
 ```
 
-## Conventions
+You'll see a menu like this:
 
-- Folder names use `kebab-case`.
-- Each item folder must include:
-  - `README.md` with purpose, requirements, inputs/outputs, and usage.
-  - `run.sh` as the entry point.
-- Keep scripts safe by validating inputs and printing clear output messages.
+```
+  Claude for Product — Installer
+  ─────────────────────────────────
 
-## Running on Windows
+  MCP
+  [1] fcm-rag              Connects Claude to the FCM knowledge base
 
-`run.sh` works natively on macOS. On Windows, use Git Bash or WSL to run the scripts.
+  Enter numbers to install (e.g. 1 3), all, or q to quit:
+  >
+```
 
-## Contributing
+Type the numbers you want, press Enter, and restart Claude Desktop when done.
 
-See `CONTRIBUTING.md` and the item template at `templates/ITEM_README_TEMPLATE.md`.
+If an item requires a token or URL, the installer will ask for it — nothing is stored in the repo.
+
+---
+
+## Requirements
+
+- Mac with **Claude Desktop** or **Claude Code** installed
+- **Node.js** LTS — [nodejs.org](https://nodejs.org)
+- **Git** — pre-installed on most Macs; if missing: `xcode-select --install`
+
+---
+
+## For contributors
+
+Clone the repo and run the installer locally:
+
+```bash
+git clone https://github.com/fcm-digital/claude-for-product.git
+cd claude-for-product
+
+# List available items
+bash install.sh --list
+
+# Install a specific MCP
+bash install.sh --mcp fcm-rag
+
+# Install a specific skill
+bash install.sh --skill my-skill
+
+# Install everything
+bash install.sh --all
+```
+
+See `CONTRIBUTING.md` to learn how to add new MCPs and skills.

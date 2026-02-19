@@ -1,28 +1,137 @@
 # Contributing
 
-Thanks for sharing your MCPs and skills. Keep everything simple and readable so non-technical teammates can reuse it quickly.
+Thanks for sharing your MCPs and skills. Keep everything simple and readable so non-technical teammates can install it with one command.
 
-## Checklist
+---
 
-- Create a new folder under `mcp/` or `skills/` using `kebab-case`.
-- Add a `README.md` with the standard sections.
-- Add a `run.sh` entry point and any required files.
-- Validate inputs and print clear, friendly output.
-- Keep the README short and task-focused.
+## How the installer works
 
-## Standard README sections
+The root `install.sh` auto-discovers items by scanning `mcp/` and `skills/` for subdirectories that contain a `run.sh`. It reads the `## Purpose` section of each `README.md` to show a description in the menu.
 
-Use this structure in every item README:
+This means: **if your item has a `run.sh` and a `## Purpose` in its README, it will appear automatically in the installer.**
 
-- Purpose
-- Requirements
-- Inputs
-- Outputs
-- Usage
-- Examples
-- Owner
-- Status
+---
 
-## Windows note
+## Adding a new item
 
-`run.sh` runs on macOS. On Windows, use Git Bash or WSL.
+1. Create a folder under `mcp/` or `skills/` using `kebab-case`:
+
+```
+mcp/my-tool/
+  README.md
+  run.sh
+  ...any supporting files
+```
+
+2. Write the `README.md` using the standard sections (see below).
+3. Write the `run.sh` following the conventions below.
+4. Test it locally: `bash install.sh --mcp my-tool`
+
+---
+
+## README sections
+
+Every item README must include these sections in this order:
+
+```markdown
+## Purpose
+## Requirements
+## Inputs
+## Outputs
+## Usage
+## Examples
+## Owner
+## Status   ← Draft | Ready
+```
+
+The text under `## Purpose` is shown directly in the installer menu — keep it to one line.
+
+---
+
+## run.sh conventions
+
+The `run.sh` is the installer for your item. It runs on the user's machine when they select it from the menu.
+
+**Structure:**
+
+```bash
+#!/bin/bash
+set -e
+
+ITEM_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+INSTALL_DIR="$HOME/.mcp/my-tool"   # where files are copied to
+
+echo "  Installing my-tool..."
+
+# 1. Check dependencies
+# 2. Prompt for tokens (see below)
+# 3. Copy and build
+# 4. Write to Claude config
+```
+
+**Rules:**
+- Always start with `set -e` so errors stop the script.
+- Use `ITEM_DIR` to reference files relative to the script.
+- Print short, friendly messages prefixed with two spaces (`  `).
+- Configure both Claude Desktop and Claude Code when possible (see the fcm-rag example).
+- Never hard-code secrets. Use the token prompt pattern below.
+
+---
+
+## Handling tokens and secrets
+
+**Tokens must never be committed to the repo.** The `run.sh` prompts the user for any required credentials at install time and injects them into the local Claude config as environment variables.
+
+### Pattern
+
+```bash
+# 1. Allow passing via env var (useful for automation)
+MY_TOKEN="${MY_TOKEN:-}"
+
+# 2. If not set, prompt the user
+if [ -z "$MY_TOKEN" ]; then
+  echo ""
+  echo "  This MCP requires a token."
+  echo "  You can find it at: https://example.com/settings/tokens"
+  echo ""
+  echo -n "  Enter your token: "
+  read -rs MY_TOKEN
+  echo ""
+fi
+
+# 3. Validate
+if [ -z "$MY_TOKEN" ]; then
+  echo "  ERROR: Token is required. Aborting."
+  exit 1
+fi
+
+# 4. Inject into Claude config via the env block
+MCP_ENTRY=$(node -e "
+console.log(JSON.stringify({
+  command: 'node',
+  args: ['$INSTALL_DIR/build/index.js'],
+  env: { MY_TOKEN: '$MY_TOKEN' }
+}));
+")
+```
+
+The token is stored only in `~/Library/Application Support/Claude/claude_desktop_config.json` (Claude Desktop) and `~/.claude.json` (Claude Code) — local files on the user's machine, never in the repo.
+
+### Updating a token
+
+The user can re-run the installer at any time to update their token:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/fcm-digital/claude-for-product/main/install.sh | bash
+```
+
+---
+
+## Checklist before merging
+
+- [ ] Folder uses `kebab-case`
+- [ ] `README.md` has all standard sections; `## Purpose` is one line
+- [ ] `run.sh` is executable (`chmod +x run.sh`) and starts with `#!/bin/bash`
+- [ ] No tokens or secrets anywhere in the files
+- [ ] Tested locally with `bash install.sh --mcp <name>` or `bash install.sh --skill <name>`
+- [ ] Status in README set to `Ready`
