@@ -60,9 +60,10 @@ set -e
 
 ITEM_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALL_DIR="$HOME/.mcp/my-tool"
+LIB_DIR="$ITEM_DIR/../../lib"
 
 # Always source the shared OS library — it handles macOS, Windows (Git Bash), and WSL.
-source "$ITEM_DIR/../../lib/os.sh"
+source "$LIB_DIR/os.sh"
 set_config_paths   # sets $CLAUDE_DESKTOP_CONFIG and $CLAUDE_CODE_CONFIG
 
 echo "  Installing my-tool..."
@@ -70,12 +71,43 @@ echo "  Installing my-tool..."
 # 1. Check dependencies
 # 2. Prompt for tokens (see below)
 # 3. Copy and build
-# 4. Write to Claude config using $CLAUDE_DESKTOP_CONFIG and $CLAUDE_CODE_CONFIG
+# 4. Write to Claude config using the shared merge helper (see below)
+```
+
+**Writing to Claude config:**
+
+Always use `lib/merge-mcp-config.js` — never write to the config files directly. The helper preserves all existing configuration, backs up before writing, and aborts with a clear error if the existing file has invalid JSON.
+
+```bash
+MCP_ENTRY=$(node -e "
+console.log(JSON.stringify({
+  command: 'node',
+  args: ['\$INSTALL_DIR/build/index.js'],
+  env: { MY_TOKEN: '\$MY_TOKEN' }
+}));
+")
+
+# Claude Desktop
+if [ -n "$CLAUDE_DESKTOP_CONFIG" ]; then
+  node "$LIB_DIR/merge-mcp-config.js" "$CLAUDE_DESKTOP_CONFIG" "my-tool" "$MCP_ENTRY"
+  echo "  Claude Desktop configured."
+else
+  echo "  Claude Desktop: skipped (unsupported OS)."
+fi
+
+# Claude Code
+if [ -f "$CLAUDE_CODE_CONFIG" ]; then
+  node "$LIB_DIR/merge-mcp-config.js" "$CLAUDE_CODE_CONFIG" "my-tool" "$MCP_ENTRY"
+  echo "  Claude Code configured."
+else
+  echo "  Claude Code: skipped (not installed)."
+fi
 ```
 
 **Rules:**
 - Always start with `set -e` so errors stop the script.
 - Always `source lib/os.sh` and call `set_config_paths` — never hard-code config paths.
+- Always use `lib/merge-mcp-config.js` to write to Claude configs — never write directly.
 - Use `read_input` / `read_secret` from `lib/os.sh` instead of raw `read` — they handle `curl | bash` and Windows correctly.
 - Print short, friendly messages prefixed with two spaces (`  `).
 - Configure both Claude Desktop and Claude Code when possible (see the fcm-rag example).

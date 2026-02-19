@@ -48,6 +48,8 @@ cp -r "$ITEM_DIR" "$INSTALL_DIR"
 npm install --prefix "$INSTALL_DIR" --silent 2>/dev/null
 npm run build --prefix "$INSTALL_DIR" --silent 2>/dev/null
 
+LIB_DIR="$ITEM_DIR/../../lib"
+
 MCP_ENTRY=$(node -e "
 console.log(JSON.stringify({
   command: 'node',
@@ -58,30 +60,18 @@ console.log(JSON.stringify({
 
 # --- Claude Desktop ---
 if [ -n "$CLAUDE_DESKTOP_CONFIG" ]; then
-  mkdir -p "$(dirname "$CLAUDE_DESKTOP_CONFIG")"
-  node -e "
-const fs = require('fs');
-const p = '$CLAUDE_DESKTOP_CONFIG';
-let c = {};
-if (fs.existsSync(p)) { try { c = JSON.parse(fs.readFileSync(p, 'utf-8')); } catch {} }
-c.mcpServers = c.mcpServers || {};
-c.mcpServers['fcm-rag'] = $MCP_ENTRY;
-fs.writeFileSync(p, JSON.stringify(c, null, 2));
-" 2>/dev/null && echo "  Claude Desktop configured." || echo "  Claude Desktop: skipped (not installed)."
+  node "$LIB_DIR/merge-mcp-config.js" "$CLAUDE_DESKTOP_CONFIG" "fcm-rag" "$MCP_ENTRY"
+  echo "  Claude Desktop configured."
 else
   echo "  Claude Desktop: skipped (unsupported OS)."
 fi
 
 # --- Claude Code ---
-node -e "
-const fs = require('fs');
-const p = '$CLAUDE_CODE_CONFIG';
-if (!fs.existsSync(p)) { process.exit(0); }
-let c = {};
-try { c = JSON.parse(fs.readFileSync(p, 'utf-8')); } catch { process.exit(0); }
-c.mcpServers = c.mcpServers || {};
-c.mcpServers['fcm-rag'] = $MCP_ENTRY;
-fs.writeFileSync(p, JSON.stringify(c, null, 2));
-" 2>/dev/null && echo "  Claude Code configured." || echo "  Claude Code: skipped (not installed)."
+if [ -f "$CLAUDE_CODE_CONFIG" ]; then
+  node "$LIB_DIR/merge-mcp-config.js" "$CLAUDE_CODE_CONFIG" "fcm-rag" "$MCP_ENTRY"
+  echo "  Claude Code configured."
+else
+  echo "  Claude Code: skipped (not installed)."
+fi
 
 echo "  Done. Restart Claude Desktop to activate."
