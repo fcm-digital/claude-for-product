@@ -6,7 +6,7 @@ Shared catalog of MCPs and skills for FCM product teams.
 
 ## Install (one command)
 
-Open **Terminal** and run:
+Open **Terminal** (Mac) or **Git Bash** (Windows) and run:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/fcm-digital/claude-for-product/refs/heads/master/install.sh | bash
