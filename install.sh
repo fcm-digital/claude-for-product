@@ -150,7 +150,7 @@ print_items
 echo ""
 echo -e "  Enter numbers to install ${DIM}(e.g. 1 3)${RESET}, ${BOLD}all${RESET}, or ${BOLD}q${RESET} to quit:"
 echo -n "  > "
-read -r selection
+read -r selection </dev/tty
 
 if [[ "$selection" == "q" || "$selection" == "quit" ]]; then
   echo ""

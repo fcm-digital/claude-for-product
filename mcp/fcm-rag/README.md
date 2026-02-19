@@ -8,7 +8,7 @@ Connects Claude to the FCM knowledge base. Allows asking questions about interna
 
 - Claude Desktop or Claude Code installed
 - Node.js LTS ([nodejs.org](https://nodejs.org))
-- The RAG API running (ask the maintainer for the URL)
+- The RAG API URL — ask @jeiker26. They need to have the mnemos stack running locally with ngrok active.
 
 ## Inputs
 

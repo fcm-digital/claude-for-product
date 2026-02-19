@@ -95,7 +95,7 @@ if [ -z "$MY_TOKEN" ]; then
   echo "  You can find it at: https://example.com/settings/tokens"
   echo ""
   echo -n "  Enter your token: "
-  read -rs MY_TOKEN
+  read -rs MY_TOKEN </dev/tty
   echo ""
 fi
 

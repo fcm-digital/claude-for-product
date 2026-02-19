@@ -27,7 +27,7 @@ if [ -z "$RAG_URL" ]; then
   echo "  Ask the maintainer (@jeiker26) if you don't have it."
   echo ""
   echo -n "  Enter the RAG API URL: "
-  read -r RAG_URL
+  read -r RAG_URL </dev/tty
   echo ""
 fi
 
