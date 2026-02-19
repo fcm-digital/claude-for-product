@@ -9,7 +9,7 @@ Shared catalog of MCPs and skills for FCM product teams.
 Open **Terminal** and run:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/fcm-digital/claude-for-product/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/fcm-digital/claude-for-product/refs/heads/master/install.sh | bash
 ```
 
 You'll see a menu like this:
