@@ -4,9 +4,24 @@ Shared catalog of MCPs and skills for FCM product teams.
 
 ---
 
-## Install (one command)
+## Requirements
 
-Open **Terminal** (Mac) or **Git Bash** (Windows) and run:
+### macOS
+- **Claude Desktop** or **Claude Code** installed
+- **Node.js** LTS — [nodejs.org](https://nodejs.org)
+- **Git** — pre-installed on most Macs; if missing: `xcode-select --install`
+
+### Windows
+- **Claude Desktop** or **Windsurf** installed
+- **Node.js** LTS — [nodejs.org](https://nodejs.org)
+- **Git** — [git-scm.com](https://git-scm.com/download/win)
+- **PowerShell** 5.1+ (pre-installed on Windows 10/11)
+
+---
+
+## Install on MacOS (one command)
+
+Open **Terminal** (Mac) and run:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/fcm-digital/claude-for-product/refs/heads/master/install.sh | bash
@@ -28,21 +43,6 @@ You'll see a menu like this:
 Type the numbers you want, press Enter, and restart Claude Desktop when done.
 
 If an item requires a token or URL, the installer will ask for it — nothing is stored in the repo.
-
----
-
-## Requirements
-
-### macOS
-- **Claude Desktop** or **Claude Code** installed
-- **Node.js** LTS — [nodejs.org](https://nodejs.org)
-- **Git** — pre-installed on most Macs; if missing: `xcode-select --install`
-
-### Windows
-- **Claude Desktop** or **Windsurf** installed
-- **Node.js** LTS — [nodejs.org](https://nodejs.org)
-- **Git** — [git-scm.com](https://git-scm.com/download/win)
-- **PowerShell** 5.1+ (pre-installed on Windows 10/11)
 
 ---
 
