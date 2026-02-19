@@ -48,18 +48,31 @@ If an item requires a token or URL, the installer will ask for it — nothing is
 
 ## Install on Windows
 
-1. Clone the repo:
-   ```powershell
-   git clone https://github.com/fcm-digital/claude-for-product.git
-   cd claude-for-product
-   ```
+Open **PowerShell** and run:
 
-2. Run the installer for the MCP you want:
-   ```powershell
-   .\mcp\fcm-rag\run.ps1
-   ```
+```powershell
+git clone https://github.com/fcm-digital/claude-for-product.git
+cd claude-for-product
+.\install.ps1
+```
 
-3. Restart Claude Desktop / Windsurf when done.
+You'll see the same interactive menu. Type the numbers you want, press Enter, and restart Claude Desktop / Windsurf when done.
+
+**Alternative commands:**
+
+```powershell
+# List available items
+.\install.ps1 -List
+
+# Install a specific MCP
+.\install.ps1 -Mcp fcm-rag
+
+# Install a specific skill
+.\install.ps1 -Skill my-skill
+
+# Install everything
+.\install.ps1 -All
+```
 
 ---
 
