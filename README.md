@@ -6,6 +6,7 @@ Shared catalog of MCPs and skills for FCM product teams.
 
 ## Requirements
 
+
 ### macOS
 - **Claude Desktop** or **Claude Code** installed
 - **Node.js** LTS — [nodejs.org](https://nodejs.org)
