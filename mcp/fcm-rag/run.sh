@@ -4,8 +4,9 @@ set -e
 
 ITEM_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALL_DIR="$HOME/.mcp/fcm-rag"
-CLAUDE_DESKTOP_CONFIG="$HOME/Library/Application Support/Claude/claude_desktop_config.json"
-CLAUDE_CODE_CONFIG="$HOME/.claude.json"
+
+source "$ITEM_DIR/../../lib/os.sh"
+set_config_paths
 
 echo "  Installing fcm-rag MCP..."
 
@@ -26,8 +27,7 @@ if [ -z "$RAG_URL" ]; then
   echo "  This MCP requires the RAG API URL."
   echo "  Ask the maintainer (@jeiker26) if you don't have it."
   echo ""
-  echo -n "  Enter the RAG API URL: "
-  read -r RAG_URL </dev/tty
+  read_input RAG_URL "  Enter the RAG API URL: "
   echo ""
 fi
 
@@ -57,8 +57,9 @@ console.log(JSON.stringify({
 ")
 
 # --- Claude Desktop ---
-mkdir -p "$HOME/Library/Application Support/Claude"
-node -e "
+if [ -n "$CLAUDE_DESKTOP_CONFIG" ]; then
+  mkdir -p "$(dirname "$CLAUDE_DESKTOP_CONFIG")"
+  node -e "
 const fs = require('fs');
 const p = '$CLAUDE_DESKTOP_CONFIG';
 let c = {};
@@ -67,6 +68,9 @@ c.mcpServers = c.mcpServers || {};
 c.mcpServers['fcm-rag'] = $MCP_ENTRY;
 fs.writeFileSync(p, JSON.stringify(c, null, 2));
 " 2>/dev/null && echo "  Claude Desktop configured." || echo "  Claude Desktop: skipped (not installed)."
+else
+  echo "  Claude Desktop: skipped (unsupported OS)."
+fi
 
 # --- Claude Code ---
 node -e "
