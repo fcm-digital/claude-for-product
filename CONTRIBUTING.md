@@ -59,19 +59,24 @@ The `run.sh` is the installer for your item. It runs on the user's machine when 
 set -e
 
 ITEM_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-INSTALL_DIR="$HOME/.mcp/my-tool"   # where files are copied to
+INSTALL_DIR="$HOME/.mcp/my-tool"
+
+# Always source the shared OS library — it handles macOS, Windows (Git Bash), and WSL.
+source "$ITEM_DIR/../../lib/os.sh"
+set_config_paths   # sets $CLAUDE_DESKTOP_CONFIG and $CLAUDE_CODE_CONFIG
 
 echo "  Installing my-tool..."
 
 # 1. Check dependencies
 # 2. Prompt for tokens (see below)
 # 3. Copy and build
-# 4. Write to Claude config
+# 4. Write to Claude config using $CLAUDE_DESKTOP_CONFIG and $CLAUDE_CODE_CONFIG
 ```
 
 **Rules:**
 - Always start with `set -e` so errors stop the script.
-- Use `ITEM_DIR` to reference files relative to the script.
+- Always `source lib/os.sh` and call `set_config_paths` — never hard-code config paths.
+- Use `read_input` / `read_secret` from `lib/os.sh` instead of raw `read` — they handle `curl | bash` and Windows correctly.
 - Print short, friendly messages prefixed with two spaces (`  `).
 - Configure both Claude Desktop and Claude Code when possible (see the fcm-rag example).
 - Never hard-code secrets. Use the token prompt pattern below.

@@ -33,9 +33,11 @@ If an item requires a token or URL, the installer will ask for it — nothing is
 
 ## Requirements
 
-- Mac with **Claude Desktop** or **Claude Code** installed
+- **Claude Desktop** or **Claude Code** installed
 - **Node.js** LTS — [nodejs.org](https://nodejs.org)
-- **Git** — pre-installed on most Macs; if missing: `xcode-select --install`
+- **Git**
+  - Mac: pre-installed; if missing run `xcode-select --install`
+  - Windows: install [Git for Windows](https://gitforwindows.org) and run the command above in **Git Bash**
 
 ---
 

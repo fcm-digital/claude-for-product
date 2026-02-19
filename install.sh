@@ -12,6 +12,7 @@ set -e
 REPO_URL="https://github.com/fcm-digital/claude-for-product"
 LOCAL_REPO="$HOME/.claude-for-product"
 
+
 # ── Colors ────────────────────────────────────────────────────────────────────
 BOLD="\033[1m"
 DIM="\033[2m"
@@ -25,6 +26,7 @@ RESET="\033[0m"
 SCRIPT_SOURCE="${BASH_SOURCE[0]}"
 if [ -n "$SCRIPT_SOURCE" ] && [ -f "$SCRIPT_SOURCE" ]; then
   REPO_DIR="$(cd "$(dirname "$SCRIPT_SOURCE")" && pwd)"
+  source "$REPO_DIR/lib/os.sh"
 else
   # Running via pipe (curl | bash) — clone or update
   if [ -d "$LOCAL_REPO/.git" ]; then
@@ -149,8 +151,7 @@ print_items
 
 echo ""
 echo -e "  Enter numbers to install ${DIM}(e.g. 1 3)${RESET}, ${BOLD}all${RESET}, or ${BOLD}q${RESET} to quit:"
-echo -n "  > "
-read -r selection </dev/tty
+read_input selection "  > "
 
 if [[ "$selection" == "q" || "$selection" == "quit" ]]; then
   echo ""
